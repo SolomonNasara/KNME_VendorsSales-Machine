@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NaijaBiz - Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="bizTitle">Welcome!</h1>
+      <p class="subtext">Manage your sales like a boss 😎</p>
+    </header>
+
+    <nav class="menu">
+      <a href="invoice.html">🧾 Invoice Generator</a>
+      <a href="tracker.html">📦 Order Tracker</a>
+      <a href="message.html">💬 WhatsApp Msg Creator</a>
+      <a href="profile.html">👤 Profile</a>
+      <a href="settings.html">⚙️ Settings</a>
+    </nav>
+  </div>
+
+  <script>
+    const bizTitle = document.getElementById('bizTitle');
+    const bizName = localStorage.getItem('bizName') || 'Naija Vendor';
+    bizTitle.textContent = `Welcome, ${bizName}!`;
+  </script>
+</body>
+</html>

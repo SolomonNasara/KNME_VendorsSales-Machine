@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NaijaBiz - Invoice Generator</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Create Invoice</h2>
+
+    <label for="clientName">Customer Name</label>
+    <input type="text" id="clientName" placeholder="e.g. Blessing Ojo" />
+
+    <label for="items">Item & Price (format: item - price)</label>
+    <textarea id="items" rows="4" placeholder="Wig - 12000&#10;Glue - 1500"></textarea>
+
+    <button onclick="generateInvoice()">Generate Invoice 🧾</button>
+
+    <!-- Invoice Display -->
+    <div id="invoiceDisplay" style="display: none; position: relative;">
+      <div class="watermark">Naija Vendor</div>
+      <h3>🧾 Invoice</h3>
+      <p><strong>Vendor:</strong> <span id="vendorName"></span></p>
+      <p><strong>Customer:</strong> <span id="displayClient"></span></p>
+      <table id="invoiceTable">
+        <thead>
+          <tr><th>Item</th><th class="right">Amount (₦)</th></tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr><td><strong>Total</strong></td><td class="right" id="totalAmount">₦0</td></tr>
+        </tfoot>
+      </table>
+
+      <!-- Action Buttons -->
+      <div class="button-container">
+        <button onclick="downloadImage()">Download as Image 📸</button>
+        <button class="whatsapp-button" onclick="shareToWhatsApp()">Share to WhatsApp 📲</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function generateInvoice() {
+      const clientName = document.getElementById('clientName').value.trim();
+      const itemsRaw = document.getElementById('items').value.trim();
+      const bizName = "Naija Vendor"; // Hardcoded for now
+
+      if (!clientName || !itemsRaw) return alert("Fill all fields.");
+
+      const invoiceTable = document.querySelector('#invoiceTable tbody');
+      invoiceTable.innerHTML = '';
+
+      let total = 0;
+      const lines = itemsRaw.split('\n');
+      lines.forEach(line => {
+        const [item, price] = line.split('-').map(x => x.trim());
+        const amount = parseFloat(price);
+        if (item && !isNaN(amount)) {
+          total += amount;
+          const row = `<tr><td>${item}</td><td class="right">₦${amount.toLocaleString()}</td></tr>`;
+          invoiceTable.insertAdjacentHTML('beforeend', row);
+        }
+      });
+
+      document.getElementById('displayClient').textContent = clientName;
+      document.getElementById('vendorName').textContent = bizName;
+      document.getElementById('totalAmount').textContent = `₦${total.toLocaleString()}`;
+      document.getElementById('invoiceDisplay').style.display = 'block';
+    }
+
+    function downloadImage() {
+      html2canvas(document.querySelector("#invoiceDisplay")).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL();
+        link.download = 'invoice.png';
+        link.click();
+      });
+    }
+
+    function shareToWhatsApp() {
+      const invoiceText = document.getElementById('invoiceDisplay').innerText;
+      const url = `https://wa.me/?text=${encodeURIComponent(invoiceText)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+</body>
+</html>
